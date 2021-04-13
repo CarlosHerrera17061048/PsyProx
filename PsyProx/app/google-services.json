@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "823525187615",
+    "project_id": "psyproxapp",
+    "storage_bucket": "psyproxapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823525187615:android:b33959ac40c973ea3df52a",
+        "android_client_info": {
+          "package_name": "com.charles.psyprox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823525187615-nst6p703hsuaks8pa99c26bqi5bs0vn0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxMYPJ8fOMKOf9gMzDZO7XIXgGxjKzj50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "823525187615-nst6p703hsuaks8pa99c26bqi5bs0vn0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
