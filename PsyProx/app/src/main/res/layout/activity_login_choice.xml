@@ -25,7 +25,7 @@
         android:textColor="@color/black" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnCerrarSesion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cerrar Sesion"
