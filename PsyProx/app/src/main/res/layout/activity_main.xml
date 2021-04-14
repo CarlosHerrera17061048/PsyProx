@@ -2,12 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LoginLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:background="#F1F1F1"
 
-    >
+    tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -57,19 +57,18 @@
         app:layout_constraintTop_toBottomOf="@+id/edtTextCorreo" />
 
     <Button
-        android:background="@drawable/button_rounded"
         android:id="@+id/btnIniciarSesion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        android:background="@drawable/button_rounded"
         android:text="Iniciar Sesion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtTextPass"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/edtTextPass" />
 
     <Button
         android:id="@+id/btnRegistro"
@@ -78,16 +77,15 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:background="@drawable/button_rounded_border"
         android:text="Registrarse"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnIniciarSesion"
-        android:background="@drawable/button_rounded_border"
-        android:textColor="@color/black"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/btnIniciarSesion" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/imBtnFacebook"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="32dp"
@@ -100,15 +98,16 @@
         app:srcCompat="@drawable/facebook" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/imgBtnGoogle"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/button_social"
         android:scaleType="fitCenter"
-        app:layout_constraintStart_toEndOf="@+id/imageButton2"
+        app:layout_constraintStart_toEndOf="@+id/imBtnFacebook"
         app:layout_constraintTop_toBottomOf="@+id/btnRegistro"
+        android:clickable="true"
         app:srcCompat="@drawable/google" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
