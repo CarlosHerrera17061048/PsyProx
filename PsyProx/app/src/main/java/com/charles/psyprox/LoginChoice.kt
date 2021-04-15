@@ -10,7 +10,8 @@ import kotlinx.android.synthetic.main.activity_login_choice.*
 
 enum class  ProviderType{
     BASIC,
-    GOOGLE
+    GOOGLE,
+    FACBOOK
 }
 class LoginChoice : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
