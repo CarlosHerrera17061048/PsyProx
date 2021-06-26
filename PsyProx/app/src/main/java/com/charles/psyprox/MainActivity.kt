@@ -5,17 +5,27 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.charles.psyprox.R
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_login_choice.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private val callbackManager = CallbackManager.Factory.create()
     private  val GOOGLE_SIGN_IN = 100;
     override fun onCreate(savedInstanceState: Bundle?) {
         Thread.sleep(2000)
@@ -45,14 +55,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun setup(){
       btnRegistro.setOnClickListener {
-          if (edtTextCorreo.text.isNotEmpty() && edtTextPass.text.isNotEmpty()){
+          if (edtTextPass.length()< 6 ){
+              Toast.makeText(this,"Contraseña muy corta",Toast.LENGTH_LONG).show()
+          }else
+          if (edtTextCorreo.text.isNotEmpty() && edtTextPass.text.isNotEmpty() ){
               FirebaseAuth.getInstance()
                   .createUserWithEmailAndPassword(edtTextCorreo.text.toString(),
               edtTextPass.text.toString()).addOnCompleteListener {
                   if(it.isSuccessful){
                       showLoginChoice(it.result?.user?.email?:"",ProviderType.BASIC)
                   }else{
-                    showAlert()
+
                   }
               }
           }
@@ -85,6 +98,42 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN )
 
         }
+        imBtnFacebook.setOnClickListener {
+
+            LoginManager.getInstance().logInWithReadPermissions(this, listOf("email"))
+
+            LoginManager.getInstance().registerCallback(callbackManager,
+                    object : FacebookCallback<LoginResult>{
+
+                        override fun onSuccess(result: LoginResult?) {
+                            result?.let {
+                                val token :AccessToken  = it.accessToken
+
+                                val credential = FacebookAuthProvider.getCredential(token.token)
+
+                                FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener {
+                                    if(it.isSuccessful){
+                                        showLoginChoice(it.result?.user?.email ?:"",ProviderType.FACEBOOK)
+                                    }else{
+                                        showAlert()
+                                    }
+
+
+                                }
+
+                            }
+                        }
+
+                        override fun onCancel() {
+
+                        }
+
+                        override fun onError(error: FacebookException?) {
+
+                           showAlert()
+                        }
+            })
+        }
     }
 
     private fun showAlert(){
@@ -95,7 +144,10 @@ class MainActivity : AppCompatActivity() {
         builder.setPositiveButton("Aceptrar",null )
         val dialog: AlertDialog = builder.create()
         dialog.show()
+
+
     }
+
     private fun showLoginChoice(email:String, provider:ProviderType){
         val LoginChoiceIntent = Intent(this , LoginChoice::class.java).apply {
         putExtra("email",email)
@@ -107,11 +159,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        callbackManager.onActivityResult(requestCode,resultCode, data)
+
+
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == GOOGLE_SIGN_IN){
 
-        }
+
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
 
         try {
@@ -133,7 +189,7 @@ class MainActivity : AppCompatActivity() {
         }catch (e: ApiException){
             showAlert()
         }
-
+        }
     }
 
 }

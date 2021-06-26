@@ -1,33 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginChoice"
-    android:orientation="vertical"
-    android:background="#F1F1F1">
+    android:background="#F1F1F1"
+    tools:context=".LoginChoice">
 
     <TextView
-        android:id="@+id/txtEmail"
-        android:layout_width="match_parent"
+        android:id="@+id/textView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:text="Email"
-        android:textColor="@color/black" />
+        android:layout_marginTop="250dp"
+        android:text="Como Usaras PSYPROX:"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/txtContra"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btnPac"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:text="provedor"
-        android:textColor="@color/black" />
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_rounded_border"
+        android:text="Soy Paciente"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/btnEsp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/btnEsp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/button_rounded_border"
+        android:text="Soy Especialista"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/btnCerrarSesion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPac" />
 
     <Button
         android:id="@+id/btnCerrarSesion"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/button_rounded"
         android:text="Cerrar Sesion"
-        android:background="@drawable/button_rounded"/>
-</LinearLayout>
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnEsp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
