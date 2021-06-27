@@ -31,6 +31,7 @@ import static android.content.ContentValues.TAG;
     Button btnAceptar;
     String Email,Sexo,Seleccion;
     RadioGroup rdgSex;
+    Intent intent;
 
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -47,7 +48,8 @@ import static android.content.ContentValues.TAG;
 
         Email = getIntent().getExtras().getString("email","defaultKey");
         Log.wtf("Email",Email);
-        Seleccion = getIntent().getExtras().getString("tipoUsauario","UsuarioNormal");
+        Seleccion = getIntent().getExtras().getString("tipoUsuario","UsuarioNormal");
+        Log.wtf("TipoUsuario",Seleccion);
 
 
         rdgSex = findViewById(R.id.rdgSex);
@@ -56,6 +58,7 @@ import static android.content.ContentValues.TAG;
         edtTelefono = findViewById(R.id.edtTelefono);
         edtFecha = findViewById(R.id.edtFecha);
 
+        intent = new Intent(this,UploadFiles.class);
         rdgSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -82,6 +85,7 @@ btnAceptar.setOnClickListener(new View.OnClickListener() {
         Usuario.put("Telefono: ",edtTelefono.getText().toString());
         Usuario.put("Fecha de Nacimiento: ",edtFecha.getText().toString());
         Usuario.put("Sexo: ",Sexo);
+        Usuario.put("Acceso: ", false);
 
 
         db.collection("Usuarios").document(Email).set(Usuario).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -97,7 +101,13 @@ btnAceptar.setOnClickListener(new View.OnClickListener() {
             }
         });
 
-        Intent intent = new Intent();
+        if(Seleccion.equals("Especialista")){
+            intent.putExtra("Email", Email);
+        startActivity(intent);
+                    }else {
+
+        }
+
 
     }
 });
