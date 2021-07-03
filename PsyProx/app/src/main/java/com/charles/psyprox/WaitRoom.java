@@ -3,6 +3,7 @@ package com.charles.psyprox;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,7 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class WaitRoom extends AppCompatActivity {
+public class  WaitRoom extends AppCompatActivity {
     // Usamos la api de Lottie para crear una variable tipo LootieAnimationView
     LottieAnimationView lottieAnimationView;
 
@@ -113,6 +114,9 @@ public class WaitRoom extends AppCompatActivity {
 
 
     public void Continuar(View view) {
+        Intent intent =  new Intent(this,LastSteps.class);
+        intent.putExtra("Email",Email);
+        startActivity(intent);
 
     }
 }

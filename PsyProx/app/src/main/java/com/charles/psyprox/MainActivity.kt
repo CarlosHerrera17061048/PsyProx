@@ -38,10 +38,7 @@ class MainActivity : AppCompatActivity() {
         session()
     }
 
-    override fun onStart() {
-        super.onStart()
-        LoginLayout.visibility = View.VISIBLE
-    }
+
     private fun session(){
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val email = prefs.getString("email",null)

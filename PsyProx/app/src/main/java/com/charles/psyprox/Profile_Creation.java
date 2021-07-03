@@ -16,12 +16,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.core.Tag;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,11 +38,13 @@ import static android.content.ContentValues.TAG;
     public class Profile_Creation extends AppCompatActivity {
     EditText txtNombre,txtApellido,edtTelefono,edtFecha;
     Button btnAceptar;
-    String Email,Sexo,Seleccion;
+    String Email,Sexo="",Seleccion;
     RadioGroup rdgSex;
     Intent intent;
+
+    Boolean Saltar = false;
     StorageReference mStorage;
-    ImageView fotoPerfil;
+    ImageView fotoPerfil1;
     //Usaremos Cloud firebase como base de datos para guardar los datos de cada usuario
    // Creamos la instancia para usar la base de datos de Firebase
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -51,9 +55,9 @@ import static android.content.ContentValues.TAG;
         setContentView(R.layout.activity_profile__creation);
 
         mStorage = FirebaseStorage .getInstance().getReference();
-
-        fotoPerfil = findViewById(R.id.fotoPerfil);
-        fotoPerfil.setOnClickListener(new View.OnClickListener() {
+        Saltar();
+        fotoPerfil1 = findViewById(R.id.fotoPerfil);
+        fotoPerfil1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                     Intent intent1 = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -68,12 +72,14 @@ import static android.content.ContentValues.TAG;
         //Aqui recibimos los extras que traemos de la clase LoginChoice.kt
         Email = getIntent().getExtras().getString("email","defaultKey");
         Log.wtf("Email",Email);
-        Seleccion = getIntent().getExtras().getString("tipoUsuario","UsuarioNormal");
+        Seleccion = getIntent().getExtras().getString("tipoUsuario","");
         Log.wtf("TipoUsuario",Seleccion);
 
         // Inicializamos componentes
         rdgSex = findViewById(R.id.rdgSex);
+
         txtNombre = findViewById(R.id.txtNombre);
+
         txtApellido = findViewById(R.id.txtApellidos);
         edtTelefono = findViewById(R.id.edtTelefono);
         edtFecha = findViewById(R.id.edtFecha);
@@ -97,21 +103,59 @@ import static android.content.ContentValues.TAG;
 
 
 btnAceptar =  findViewById(R.id.btnAceptar);
+        btnAceptar.setEnabled(false);
+
 // Evento on click listener que usaremos para subir la informacios a la base de datos usando un objeto Map ya que estos asocian una clave con un valor
 // y asi será mas facil identificarlos.
 btnAceptar.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
+
         //Creacion  del objeto Map
-        // Agregamos los datos obtenidos conviertiendolos a String
-        // Excepto la clave Acceso la cual es tipo Boleano
         Map<String, Object> Usuario = new HashMap<>();
-        Usuario.put("Nombre: ",txtNombre.getText().toString());
-        Usuario.put("Apellido: ",txtApellido.getText().toString());
-        Usuario.put("Telefono: ",edtTelefono.getText().toString());
-        Usuario.put("Edad: ",edtFecha.getText().toString());
-        Usuario.put("Sexo: ",Sexo);
-        Usuario.put("Acceso: ", false);
+
+        //If para comprobar que los campos no esten vacios
+        if(txtNombre.getText().toString().isEmpty() ||
+                txtApellido.getText().toString().isEmpty() ||
+                edtFecha.getText().toString().isEmpty() ||
+                edtTelefono.getText().toString().isEmpty() ||
+                Sexo.equals("")){
+            Toast.makeText(getApplicationContext(),"Por Favor Rellene todos los campos",Toast.LENGTH_SHORT).show();
+
+        } else {
+
+
+
+            // Agregamos los datos obtenidos conviertiendolos a String
+            // Excepto la clave Acceso la cual es tipo Boleano
+            Usuario.put("Nombre: ",txtNombre.getText().toString());
+            Usuario.put("Apellido: ",txtApellido.getText().toString());
+            Usuario.put("Telefono: ",edtTelefono.getText().toString());
+            Usuario.put("Edad: ",edtFecha.getText().toString());
+            Usuario.put("tipoUsuario", Seleccion);
+            Usuario.put("Sexo: ",Sexo);
+            Usuario.put("Acceso: ", false);
+
+            //Si antes en el activity LoginChoice escogieron Especialista los mandara a un activity
+            //  en el cual tendrá que subir ciertos archivos para corroborar que es
+            //un especialista de verdad ademas enviamos un extra con la informacion del Email
+            // y en caso de haber seleccionado Paciente los enviara a el activity principal
+            if(Seleccion.equals("Especialista")){
+                intent.putExtra("Email", Email);
+                startActivity(intent);
+            }else {
+
+                Intent intent1 = new Intent(getApplicationContext(),CrearCita.class);
+                startActivity(intent1);
+
+            }
+
+        }
+
+
+
+
+
 
         //Creacion de la Coleccion Usuarios
         db.collection("Usuarios")
@@ -128,16 +172,7 @@ btnAceptar.setOnClickListener(new View.OnClickListener() {
 
             }
         });
-            //Si antes en el activity LoginChoice escogieron Especialista los mandara a un activity
-           //  en el cual tendrá que subir ciertos archivos para corroborar que es
-          //un especialista de verdad ademas enviamos un extra con la informacion del Email
-        // y en caso de haber seleccionado Paciente los enviara a el activity principal
-        if(Seleccion.equals("Especialista")){
-            intent.putExtra("Email", Email);
-        startActivity(intent);
-                    }else {
 
-        }
 
 
     }
@@ -147,18 +182,48 @@ btnAceptar.setOnClickListener(new View.OnClickListener() {
 
     }
 
+        private void Saltar() {
+            Email = getIntent().getExtras().getString("email","defaultKey");
+        db.collection("Usuarios").document(Email).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
+                String Nombre = documentSnapshot.getString("Nombre: ");
+
+                    Seleccion = getIntent().getExtras().getString("tipoUsuario","");
+                if(Nombre != null && Seleccion.equals("Especialista")){
+                    Intent intent1 = new Intent(getApplicationContext(),UploadFiles.class);
+                    intent1.putExtra("Email",Email);
+
+                    startActivity(intent1);
+                    }else if (Nombre!= null && Seleccion.equals("Paciente")){
+                        Intent intent1 = new Intent(getApplicationContext(),CrearCita.class);
+                        intent1.putExtra("Email",Email);
+
+                        startActivity(intent1);
+                    }
+
+
+                   
+                }
+            }
+        });
+        }
+
+
         @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             if(resultCode==RESULT_OK){
                 Uri path=data.getData();
                 if(requestCode==10){
-                    fotoPerfil.setImageURI(path);
+                    fotoPerfil1.setImageURI(path);
                     StorageReference storageReference = mStorage.child(Email).child(path.getLastPathSegment());
                     storageReference.putFile(path).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(getApplicationContext(),"Imagen subida exitosamente",Toast.LENGTH_LONG).show();
+                            btnAceptar.setEnabled(true);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
